@@ -14,7 +14,7 @@ import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-const SignUpPage: React.FC = () => {
+const LoginPage: React.FC = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -26,11 +26,10 @@ const SignUpPage: React.FC = () => {
                     sx={{ width: "100%", maxWidth: "500px" }}
                 >
                     <Typography variant="h5" align="center" padding={1}>
-                        Create a account
+                        Login
                     </Typography>
                     <form className="flex flex-col gap-4 mt-4">
                         <TextField label="Email" type="email" />
-                        <TextField label="Name" />
                         <TextField
                             label="Password"
                             type={showPassword ? "text" : "password"}
@@ -59,13 +58,13 @@ const SignUpPage: React.FC = () => {
                             variant="contained"
                             sx={{ paddingY: "0.85rem" }}
                         >
-                            Create Account
+                            Login
                         </Button>
                     </form>
                     <div className="flex gap-2 justify-center my-2">
-                        <Typography>Already have account?</Typography>
-                        <Link component={RouterLink} to="/login">
-                            Login
+                        <Typography>Not have account?</Typography>
+                        <Link component={RouterLink} to="/signup">
+                            Create account
                         </Link>
                     </div>
                     <Divider>
@@ -80,4 +79,4 @@ const SignUpPage: React.FC = () => {
     );
 };
 
-export default SignUpPage;
+export default LoginPage;
