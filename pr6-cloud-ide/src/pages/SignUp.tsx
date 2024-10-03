@@ -1,57 +1,80 @@
-import { Button, TextField } from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
+import {
+    Button,
+    Divider,
+    InputAdornment,
+    Link,
+    Paper,
+    TextField,
+    Typography,
+    IconButton,
+} from "@mui/material";
+import React, { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import GoogleAuthButton from "../components/GoogleAuthButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const SignUpPage: React.FC = () => {
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+
     return (
         <>
             <div className="h-svh w-svw flex justify-center items-center">
-                <div className="w-0 md:w-[60%] invisible md:visible flex justify-center items-center">
-                    <img src="/images/main_logo6.png" alt="" />
-                </div>
-                <div className=" h-full flex flex-grow justify-center items-center bg-[#000000] relative">
-                    <img
-                        src="/images/icon_fill_circle.png"
-                        className="md:invisible visible absolute top-0 left-0 m-5 w-20"
-                        alt=""
-                    />
-                    <div className="form-container w-[300px] max-w-full flex flex-col gap-8">
-                        <div className="text-4xl text-center">
-                            Create an account
-                        </div>
-                        <div className="w-full">
-                            <TextField
-                                id="email"
-                                label="Email address*"
-                                variant="outlined"
-                                type="email"
-                                className="w-full"
-                            />
-                        </div>
-                        <div className="w-full">
-                            <Button
-                                variant="contained"
-                                className="w-full"
-                                sx={{
-                                    paddingY: 1.5,
-                                    backgroundColor: "#272822",
-                                    color: "white",
-                                    ":hover": {
-                                        backgroundColor: "#75715e",
-                                    },
-                                }}
-                            >
-                                Continue
-                            </Button>
-                        </div>
-                        <div className="text-center">
-                            Already have an account?{" "}
-                            <Link to={"/"} className="text-purple-900 ms-2">
-                                Login
-                            </Link>
-                        </div>
+                <Paper
+                    elevation={3}
+                    className="p-3 m-3"
+                    sx={{ width: "100%", maxWidth: "500px" }}
+                >
+                    <Typography variant="h5" align="center" padding={1}>
+                        Create a account
+                    </Typography>
+                    <form className="flex flex-col gap-4 mt-4">
+                        <TextField label="Email" type="email" />
+                        <TextField label="Name" />
+                        <TextField
+                            label="Password"
+                            type={showPassword ? "text" : "password"}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
+                                            edge="end"
+                                        >
+                                            {showPassword ? (
+                                                <VisibilityOff />
+                                            ) : (
+                                                <Visibility />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+
+                        <Button
+                            variant="contained"
+                            sx={{ paddingY: "0.85rem" }}
+                        >
+                            Create Account
+                        </Button>
+                    </form>
+                    <div className="flex gap-2 justify-center my-2">
+                        <Typography>Already have account?</Typography>
+                        <Link component={RouterLink} to="/">
+                            Login
+                        </Link>
                     </div>
-                </div>
+                    <Divider>
+                        <Typography align="center" padding={1}>
+                            OR
+                        </Typography>
+                    </Divider>
+                    <GoogleAuthButton></GoogleAuthButton>
+                </Paper>
             </div>
         </>
     );
