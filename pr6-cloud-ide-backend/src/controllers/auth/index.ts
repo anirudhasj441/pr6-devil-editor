@@ -42,7 +42,7 @@ export const registerUser = async(req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
     try {
         let data = req.body;
-        let user: IUser | null = await User.findOne({
+        let user = await User.findOne({
             email: data.email,
         });
         if (!user) {
@@ -61,6 +61,7 @@ export const loginUser = async (req: Request, res: Response) => {
         const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY ?? "");
         res.status(200).json({
             token: token,
+            user: user.toJSON()
         });
     } catch (error) {
         res.status(500).json({

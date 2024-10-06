@@ -4,6 +4,7 @@ import { User } from "../../models/user";
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET_KEY } from "../..";
 import { IUser } from "../../types";
+import { profile } from "console";
 
 export const googleLogin = async (req: Request, res: Response) => {
     try {
@@ -29,7 +30,12 @@ export const googleLogin = async (req: Request, res: Response) => {
 
         const token = jwt.sign({userId: user._id}, JWT_SECRET_KEY ?? "");
         res.send({
-            token: token
+            token: token,
+            user: {
+                email: user.email,
+                name: user.name,
+                profile_pic: user.profile_pic
+            }
         }).status(200)
 
     } catch(err) {

@@ -15,20 +15,21 @@ export const connectDB = (uri: string | undefined) => {
     };
 };
 
-export const jwtRequired = async (req: Request, res: Response, next: NextFunction) => {
+export const jwtRequired = (req: Request, res: Response, next: NextFunction) => {
     try {
         
         const token = req.header('Authorization')?.split(' ')[1];
 
         if(!token){
-            return res.send({
+            res.send({
                 error: "Access Denied"
             }).status(401);
+            return;
         }
 
         const decode:jwt.JwtPayload = jwt.verify(token, JWT_SECRET_KEY ?? "") as jwt.JwtPayload;
         if(!('userId' in decode)) {
-            return res.send({
+            res.send({
                 error: "Access Denied"
             }).status(401);
         }
@@ -36,7 +37,7 @@ export const jwtRequired = async (req: Request, res: Response, next: NextFunctio
         next();
 
     } catch(err) {
-        return res.send({
+        res.send({
             error: err
         }).status(500);
 
