@@ -14,6 +14,7 @@ import Editor from "../components/Editor";
 import FileCopyTwoToneIcon from "@mui/icons-material/FileCopyOutlined";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import EditorPlaceholder from "../components/Editor/EditorPlaceholder";
+import workspaceSocket from "../socket/workspace";
 
 const Workspace: React.FC = () => {
     const [explorerState, setExplorerState] = useState(false);
@@ -49,6 +50,15 @@ const Workspace: React.FC = () => {
         }
         // return () => {};
     }, [splitSizes, terminalSplitSizes]);
+
+    useEffect(() => {
+        console.log("Workspace mount!!!");
+        workspaceSocket.connect();
+        return () => {
+            console.log("Workspace unmount!!!");
+            workspaceSocket.disconnect()
+        }
+    }, []);
 
     return (
         <>
