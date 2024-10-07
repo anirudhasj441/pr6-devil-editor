@@ -1,7 +1,7 @@
 import { Avatar, IconButton } from "@mui/material";
 import React from "react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
-import { googleSignInApi } from "../../utils/api";
+import User from "../../utils/User";
 
 const GoogleAuthButton = () => {
     return (
@@ -18,7 +18,9 @@ const GoogleAuthButton = () => {
 const GoogleAuth: React.FC = () => {
     const handleGoogleAuthResponse = async (response: any): Promise<void> => {
         try {
-            const json_res = await googleSignInApi(response.code);
+            const user: User = new User()
+
+            const json_res = await user.googleLogin(response.code);
 
             console.log(json_res);
         } catch (err) {

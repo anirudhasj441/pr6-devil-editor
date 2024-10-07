@@ -9,13 +9,27 @@ import {
     IconButton,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import User from "../utils/User";
 
 const LoginPage: React.FC = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+
+    const navigate = useNavigate();
+
+    const handleLogin = async() => {
+        const user = new User();
+        const result = await user.login(email, password);
+        if(result) {
+            navigate('/');
+        }
+    }
 
     return (
         <>
@@ -28,11 +42,13 @@ const LoginPage: React.FC = () => {
                     <Typography variant="h5" align="center" padding={1}>
                         Login
                     </Typography>
-                    <form className="flex flex-col gap-4 mt-4">
-                        <TextField label="Email" type="email" />
+                    <form className="flex flex-col gap-4 mt-4" onSubmit={handleLogin}>
+                        <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                         <TextField
                             label="Password"
                             type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">

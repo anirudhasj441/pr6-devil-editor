@@ -1,11 +1,7 @@
 import { StoreApi, UseBoundStore, create } from "zustand";
-import { IUser } from "../types";
+import { IUser, IUserStore } from "../types";
 
-interface IUserStore {
-    user: IUser | undefined;
-    getUser: () => IUser | undefined;
-    setUser: (user: IUser) => void;
-}
+
 
 export const userStore: UseBoundStore<StoreApi<IUserStore>> =
     create<IUserStore>()((set) => ({

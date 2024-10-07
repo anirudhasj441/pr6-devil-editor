@@ -1,17 +1,21 @@
-// import { userStore } from "../stores/user";
-import { signInApi, signUpApi } from "./api";
+import { userStore } from "../stores/user";
+import { IUserStore } from "../types";
+import { googleSignInApi, signInApi, signUpApi } from "./api";
 
 class User {
     private _isLoggedIn: boolean;
     private _email: string;
     private _name: string;
     private _profilePic: string;
+    private _userStore: IUserStore;
 
     public constructor() {
         this._isLoggedIn = false;
         this._email = "";
         this._name = "";
         this._profilePic = "";
+
+        this._userStore = userStore();
     }
 
     public async login(email: string, password: string) {
@@ -19,12 +23,40 @@ class User {
 
         if (!result) {
             console.log("login failed!!");
-            return;
+            return false;
         }
 
         sessionStorage.setItem("token", result.token);
 
-        // const { setUser } = userStore();
+        this._userStore.setUser({
+            isLoggedIn: true,
+            email: result.user.email,
+            name: result.user.name,
+            profile: result.user.profile
+        })
+
+        return true;
+
+    }
+
+    public async googleLogin(code: string) {
+        const result = await googleSignInApi(code);
+
+        if(!result) {
+            console.log("login failed!!");
+            return false;
+        }
+
+        sessionStorage.setItem("token", result.token);
+
+        this._userStore.setUser({
+            isLoggedIn: true,
+            email: result.user.email,
+            name: result.user.name,
+            profile: result.user.profile
+        })
+
+        return true;
     }
 
     public async signUp(email: string, name: string, password: string) {

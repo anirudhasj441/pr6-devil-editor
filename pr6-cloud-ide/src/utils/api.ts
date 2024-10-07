@@ -44,6 +44,8 @@ export const signUpApi = async (
 export const googleSignInApi = async (code: string) => {
     const res = await fetch(`${backend_url}?code=${code}`);
 
+    if(res.status !== 200) return false;
+
     const response = await res.json();
 
     return response;
