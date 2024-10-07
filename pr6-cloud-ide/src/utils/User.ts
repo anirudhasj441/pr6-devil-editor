@@ -1,62 +1,62 @@
+import { getUserApi, googleSignInApi, signInApi, signUpApi } from "./api";
+import { IUser } from "../types";
 import { userStore } from "../stores/user";
-import { IUserStore } from "../types";
-import { googleSignInApi, signInApi, signUpApi } from "./api";
 
 class User {
     private _isLoggedIn: boolean;
     private _email: string;
     private _name: string;
     private _profilePic: string;
-    private _userStore: IUserStore;
 
     public constructor() {
         this._isLoggedIn = false;
         this._email = "";
         this._name = "";
         this._profilePic = "";
-
-        this._userStore = userStore();
     }
 
-    public async login(email: string, password: string) {
+    public async login(email: string, password: string): Promise<IUser> {
         const result = await signInApi(email, password);
 
         if (!result) {
             console.log("login failed!!");
-            return false;
+            throw new Error("Login Failed");
         }
+
+        const user: IUser = result.user;
+
+        userStore.getState().setUser({
+            isLoggedIn: true,
+            email: user.email,
+            name: user.name,
+            profile_pic: user.profile_pic,
+        });
 
         sessionStorage.setItem("token", result.token);
 
-        this._userStore.setUser({
-            isLoggedIn: true,
-            email: result.user.email,
-            name: result.user.name,
-            profile: result.user.profile
-        })
-
-        return true;
-
+        return user;
     }
 
-    public async googleLogin(code: string) {
+    public async googleLogin(code: string): Promise<IUser> {
         const result = await googleSignInApi(code);
 
-        if(!result) {
+        if (!result) {
             console.log("login failed!!");
-            return false;
+            throw new Error("Invalid credentials");
         }
+
+        const user: IUser = result.user;
 
         sessionStorage.setItem("token", result.token);
 
-        this._userStore.setUser({
+        userStore.getState().setUser({
             isLoggedIn: true,
-            email: result.user.email,
-            name: result.user.name,
-            profile: result.user.profile
-        })
+            email: user.email,
+            name: user.name,
+            profile_pic: user.profile_pic,
+        });
 
-        return true;
+        return result.user;
     }
 
     public async signUp(email: string, name: string, password: string) {
@@ -66,6 +66,28 @@ class User {
             console.log("signup failed!!");
             return;
         }
+    }
+
+    public async isUserAuthenticated(): Promise<boolean> {
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            return false;
+        }
+
+        if (userStore.getState().getUser()?.isLoggedIn) {
+            return true;
+        }
+
+        const user: IUser = await getUserApi(token);
+
+        userStore.getState().setUser({
+            isLoggedIn: true,
+            email: user.email,
+            name: user.name,
+            profile_pic: user.profile_pic,
+        });
+
+        return true;
     }
 
     public set isLoggedIn(v: boolean) {

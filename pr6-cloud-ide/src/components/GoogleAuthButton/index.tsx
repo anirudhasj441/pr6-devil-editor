@@ -1,7 +1,9 @@
 import { Avatar, IconButton } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import User from "../../utils/User";
+import { useNavigate } from "react-router-dom";
+import AlertMessage from "../AlertMessage";
 
 const GoogleAuthButton = () => {
     return (
@@ -16,15 +18,23 @@ const GoogleAuthButton = () => {
 };
 
 const GoogleAuth: React.FC = () => {
+    const navigate = useNavigate();
+
+    const [error, setError] = useState<boolean>(false);
+
     const handleGoogleAuthResponse = async (response: any): Promise<void> => {
         try {
-            const user: User = new User()
+            const user: User = new User();
 
             const json_res = await user.googleLogin(response.code);
 
             console.log(json_res);
+
+            navigate("/");
         } catch (err) {
             console.error("auth failed: ", err);
+            setError(true);
+            setTimeout(() => setError(false), 3000);
         }
     };
 
@@ -38,6 +48,11 @@ const GoogleAuth: React.FC = () => {
     return (
         <>
             <div className="w-full text-center">
+                <AlertMessage
+                    show={error}
+                    severity="error"
+                    message="Login Failed!!"
+                ></AlertMessage>
                 <IconButton onClick={googleLogin}>
                     <Avatar src="/images/google-g-2015.svg"></Avatar>
                 </IconButton>

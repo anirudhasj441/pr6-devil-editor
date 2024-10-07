@@ -14,26 +14,42 @@ import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import User from "../utils/User";
+import { IUser } from "../types";
+import AlertMessage from "../components/AlertMessage";
 
 const LoginPage: React.FC = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [error, setError] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
-    const handleLogin = async() => {
-        const user = new User();
-        const result = await user.login(email, password);
-        if(result) {
-            navigate('/');
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const user = new User();
+            const result: IUser = await user.login(email, password);
+            result;
+            navigate("/");
+        } catch (err) {
+            console.error("Login Failed!", err);
+            setError(true);
+            setTimeout(() => {
+                setError(false);
+            }, 3000);
         }
-    }
+    };
 
     return (
         <>
             <div className="h-svh w-svw flex justify-center items-center">
+                <AlertMessage
+                    show={error}
+                    severity="error"
+                    message="Invalid Credentilas"
+                ></AlertMessage>
                 <Paper
                     elevation={3}
                     className="p-3 m-3"
@@ -42,8 +58,16 @@ const LoginPage: React.FC = () => {
                     <Typography variant="h5" align="center" padding={1}>
                         Login
                     </Typography>
-                    <form className="flex flex-col gap-4 mt-4" onSubmit={handleLogin}>
-                        <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <form
+                        className="flex flex-col gap-4 mt-4"
+                        onSubmit={handleLogin}
+                    >
+                        <TextField
+                            label="Email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
                         <TextField
                             label="Password"
                             type={showPassword ? "text" : "password"}
@@ -73,6 +97,7 @@ const LoginPage: React.FC = () => {
                         <Button
                             variant="contained"
                             sx={{ paddingY: "0.85rem" }}
+                            type="submit"
                         >
                             Login
                         </Button>

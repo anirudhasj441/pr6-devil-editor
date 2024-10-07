@@ -42,11 +42,28 @@ export const signUpApi = async (
 };
 
 export const googleSignInApi = async (code: string) => {
-    const res = await fetch(`${backend_url}?code=${code}`);
+    const res = await fetch(`${backend_url}/auth/google?code=${code}`);
 
-    if(res.status !== 200) return false;
+    if (res.status !== 200) return false;
 
     const response = await res.json();
 
     return response;
+};
+
+export const getUserApi = async (token: string) => {
+    const res = await fetch(`${backend_url}/getuser`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401) {
+        throw new Error("Access denied");
+    }
+
+    const response = await res.json();
+    console.log("response: ", response);
+
+    return response.user;
 };
