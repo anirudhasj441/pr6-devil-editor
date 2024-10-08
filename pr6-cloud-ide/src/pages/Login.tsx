@@ -8,7 +8,7 @@ import {
     Typography,
     IconButton,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
@@ -18,8 +18,9 @@ import { IUser } from "../types";
 import AlertMessage from "../components/AlertMessage";
 
 const LoginPage: React.FC = () => {
-    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const mounted = useRef(false);
 
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
@@ -41,6 +42,25 @@ const LoginPage: React.FC = () => {
             }, 3000);
         }
     };
+
+    useEffect(() => {
+        if (mounted.current) return;
+
+        const user = new User();
+
+        const checkUserAuthenticated = async () => {
+            const result = await user.isUserAuthenticated();
+
+            if (result) {
+                navigate("/");
+            }
+        };
+
+        checkUserAuthenticated();
+        return () => {
+            mounted.current = true;
+        };
+    }, []);
 
     return (
         <>

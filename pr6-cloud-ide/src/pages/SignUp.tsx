@@ -8,7 +8,7 @@ import {
     Typography,
     IconButton,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
@@ -19,6 +19,8 @@ import AlertMessage from "../components/AlertMessage";
 const SignUpPage: React.FC = () => {
     const navigate = useNavigate();
 
+    const mounted = useRef(false);
+
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [email, setEmail] = useState<string>("");
     const [name, setName] = useState<string>("");
@@ -28,24 +30,45 @@ const SignUpPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-
             const user = new User();
 
             await user.signUp(email, name, password);
 
-            navigate('/');
-        } catch(err) {
+            navigate("/");
+        } catch (err) {
             console.error("Create user failed!");
             setError(true);
             setTimeout(() => setError(false), 3000);
         }
+    };
 
-    }
+    useEffect(() => {
+        if (mounted.current) return;
+
+        const user = new User();
+
+        const checkUserAuthenticated = async () => {
+            const result = await user.isUserAuthenticated();
+
+            if (result) {
+                navigate("/");
+            }
+        };
+
+        checkUserAuthenticated();
+        return () => {
+            mounted.current = true;
+        };
+    }, []);
 
     return (
         <>
             <div className="h-svh w-svw flex justify-center items-center">
-                <AlertMessage severity="error" show={error} message="Sign up failed!"  />
+                <AlertMessage
+                    severity="error"
+                    show={error}
+                    message="Sign up failed!"
+                />
                 <Paper
                     elevation={3}
                     className="p-3 m-3"
@@ -54,9 +77,21 @@ const SignUpPage: React.FC = () => {
                     <Typography variant="h5" align="center" padding={1}>
                         Create a account
                     </Typography>
-                    <form className="flex flex-col gap-4 mt-4" onSubmit={handleSubmit}>
-                        <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                        <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} />
+                    <form
+                        className="flex flex-col gap-4 mt-4"
+                        onSubmit={handleSubmit}
+                    >
+                        <TextField
+                            label="Email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <TextField
+                            label="Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
                         <TextField
                             label="Password"
                             type={showPassword ? "text" : "password"}
