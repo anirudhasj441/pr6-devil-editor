@@ -9,4 +9,5 @@ export interface IUserStore {
     user: IUser | undefined;
     getUser: () => IUser | undefined;
     setUser: (user: IUser) => void;
+    logout: () => void;
 }
