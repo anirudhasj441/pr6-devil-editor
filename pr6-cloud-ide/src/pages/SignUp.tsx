@@ -34,7 +34,7 @@ const SignUpPage: React.FC = () => {
 
             await user.signUp(email, name, password);
 
-            navigate("/");
+            navigate("/dashboard");
         } catch (err) {
             console.error("Create user failed!");
             setError(true);
