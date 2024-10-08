@@ -10,6 +10,9 @@ import connectMongoDB from "../utils/connection";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { JWT_SECRET_KEY } from "..";
+import { User } from "../models/user";
+import { IUser } from "../types";
+import { QueryOptions } from "mongoose";
 
 /**
  * Middleware to establish a connection to MongoDB.
@@ -41,7 +44,7 @@ export const connectDB = (uri: string | undefined) => {
  * @param next - Next function to pass control to the next middleware
  * @returns the authenticated user's ID is assigned to req.userId if JWT is valid
  */
-export const jwtRequired = (req: Request, res: Response, next: NextFunction) => {
+export const jwtRequired = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Extract the token from the 'Authorization' header
         const token = req.header('Authorization')?.split(' ')[1];
@@ -62,10 +65,20 @@ export const jwtRequired = (req: Request, res: Response, next: NextFunction) => 
             res.send({
                 error: "Access Denied"
             }).status(401);
+            return;
+        }
+
+        const user: Omit<IUser, 'password'> | null = await User.findById(decode.userId).select(['-password']);
+
+        if(!user) {
+            res.send({
+                error: "Access Denied"
+            }).status(401);
+            return;
         }
 
         // Attach the user ID to the request object for downstream use
-        req.userId = decode.userId;
+        req.user = user;
 
         // Proceed for the route
         next();

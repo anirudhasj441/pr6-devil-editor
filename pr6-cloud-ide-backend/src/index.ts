@@ -13,6 +13,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './middlewares';
 import authRouter from './router/auth';
 import router from './router';
+import workspaceRouter from './router/workspace';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -35,6 +36,9 @@ app.use('/', router);
 
 // Set up authentication routes under /auth
 app.use('/auth', authRouter);
+
+// Set up workspace routes under /workspace
+app.use('/workspace', workspaceRouter);
 
 // Define the handler for serverless deployment
 export const handler = serverless(app);

@@ -17,16 +17,8 @@ import { User } from "../models/user"
  * @param res Express Response object
  */
 export const getUser = async (req: Request, res: Response) => {
-    // Fetch the userId from the request, userId append to Request object by jwtRequired middleware after verifying jwt token.
-    if(!req.userId) {
-        res.send({
-            error: "Access denied"
-        }).status(401);
-        return
-    }
-
     // Check the user exist with userId decode from JWT token.
-    const user = await User.findById(req.userId).select(['email', 'name', 'profile_pic']);
+    const user = req.user;
 
     // If user not found send error response.
     if(!user) {
