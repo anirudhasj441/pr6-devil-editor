@@ -28,16 +28,24 @@ export const registerUser = async(req: Request, res: Response) => {
 
     try {
         // Insert a new user entry in the database.
-        const result = await User.create({
+        const user = await User.create({
             email: data.email,
             name: data.name,
             password: password
         });
 
-        //Send the success msg in the response.
+
+        const token = jwt.sign({userId: user._id}, JWT_SECRET_KEY ?? "");
+
+        // Send the JWT token and user profile information in the response.
         res.send({
-            msg: "user created successfully",
-        }).status(201);
+            token: token,
+            user: {
+                email: user.email,
+                name: user.name,
+                profile_pic: user.profile_pic
+            }
+        }).status(200)
 
     } catch(err) {
         // Log and send the error response in case of failure.
