@@ -15,6 +15,7 @@ import jwt from "jsonwebtoken";
 
 /**
  * Handles the registering of the new user with given email, name and password
+ * and send JWT token and user information if user created successfully.
  * 
  * @param req - Express Request object
  * @param res - Express response object

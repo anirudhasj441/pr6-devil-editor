@@ -25,8 +25,10 @@ export const getUser = async (req: Request, res: Response) => {
         return
     }
 
+    // Check the user exist with userId decode from JWT token.
     const user = await User.findById(req.userId).select(['email', 'name', 'profile_pic']);
 
+    // If user not found send error response.
     if(!user) {
         res.send({
             error: "Access denied"
@@ -34,6 +36,7 @@ export const getUser = async (req: Request, res: Response) => {
         return;
     }
 
+    // Send user information in response.
     res.send({
         user: user.toJSON()
     }).status(200)
