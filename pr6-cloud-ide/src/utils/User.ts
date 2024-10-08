@@ -56,16 +56,29 @@ class User {
             profile_pic: user.profile_pic,
         });
 
-        return result.user;
+        return user;
     }
 
-    public async signUp(email: string, name: string, password: string) {
+    public async signUp(email: string, name: string, password: string): Promise<IUser> {
         const result = await signUpApi(email, name, password);
 
         if (!result) {
-            console.log("signup failed!!");
-            return;
+            console.log("login failed!!");
+            throw new Error("Invalid credentials");
         }
+
+        const user: IUser = result.user;
+
+        userStore.getState().setUser({
+            isLoggedIn: true,
+            email: user.email,
+            name: user.name,
+            profile_pic: user.profile_pic,
+        });
+
+        sessionStorage.setItem("token", result.token);
+
+        return user;
     }
 
     public async isUserAuthenticated(): Promise<boolean> {

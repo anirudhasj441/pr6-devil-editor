@@ -9,17 +9,43 @@ import {
     IconButton,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import User from "../utils/User";
+import AlertMessage from "../components/AlertMessage";
 
 const SignUpPage: React.FC = () => {
+    const navigate = useNavigate();
+
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>("");
+    const [name, setName] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [error, setError] = useState<boolean>(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+
+            const user = new User();
+
+            await user.signUp(email, name, password);
+
+            navigate('/');
+        } catch(err) {
+            console.error("Create user failed!");
+            setError(true);
+            setTimeout(() => setError(false), 3000);
+        }
+
+    }
 
     return (
         <>
             <div className="h-svh w-svw flex justify-center items-center">
+                <AlertMessage severity="error" show={error} message="Sign up failed!"  />
                 <Paper
                     elevation={3}
                     className="p-3 m-3"
@@ -28,12 +54,14 @@ const SignUpPage: React.FC = () => {
                     <Typography variant="h5" align="center" padding={1}>
                         Create a account
                     </Typography>
-                    <form className="flex flex-col gap-4 mt-4">
-                        <TextField label="Email" type="email" />
-                        <TextField label="Name" />
+                    <form className="flex flex-col gap-4 mt-4" onSubmit={handleSubmit}>
+                        <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} />
                         <TextField
                             label="Password"
                             type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -58,6 +86,7 @@ const SignUpPage: React.FC = () => {
                         <Button
                             variant="contained"
                             sx={{ paddingY: "0.85rem" }}
+                            type="submit"
                         >
                             Create Account
                         </Button>
