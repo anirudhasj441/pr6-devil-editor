@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
             const user = new User();
             const result: IUser = await user.login(email, password);
             result;
-            navigate("/");
+            navigate("/dashboard");
         } catch (err) {
             console.error("Login Failed!", err);
             setError(true);

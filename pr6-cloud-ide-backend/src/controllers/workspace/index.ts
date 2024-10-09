@@ -53,13 +53,41 @@ export const deleteWorkspace = async (req: Request, res: Response) => {
 
     const data = req.body;
 
+    console.log(data);
+
     const workspace = await Workspace.findOne({
         _id: data.id,
         owner: user._id,
     }).deleteOne();
 
+    const workspaces = await Workspace.find({ owner: user._id }).select(
+        "-owner"
+    );
+
     res.send({
         msg: "workspace deleted!",
         workspace: workspace,
+        workspaces: workspaces,
     });
 };
+
+export const updateWorkspace = async(req: Request, res: Response) => {
+    const user: QueryOptions<IUser> = req.user;
+
+    const data = req.body;
+
+    const workspace = await Workspace.findOneAndUpdate({
+        _id: data.id,
+        owner: user._id,
+    }, {status: data.status});
+
+    const workspaces = await Workspace.find({ owner: user._id }).select(
+        "-owner"
+    );
+
+    res.send({
+        msg: "workspace updated!",
+        workspace: workspace,
+        workspaces: workspaces,
+    }).status(201)
+}

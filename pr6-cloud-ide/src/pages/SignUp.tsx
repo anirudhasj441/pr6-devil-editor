@@ -51,7 +51,7 @@ const SignUpPage: React.FC = () => {
             const result = await user.isUserAuthenticated();
 
             if (result) {
-                navigate("/");
+                navigate("/dashboard");
             }
         };
 

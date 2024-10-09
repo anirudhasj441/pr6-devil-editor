@@ -68,10 +68,40 @@ export const getUserApi = async (token: string) => {
     return response.user;
 };
 
-export const getWorkspacesApi = async(token: string, query:string | undefined) => {
-    const res = await fetch(`${backend_url}/workspace${query ? '?q=' + query: ''}`, {
+export const getWorkspacesApi = async (
+    token: string,
+    query: string | undefined
+) => {
+    const res = await fetch(
+        `${backend_url}/workspace${query ? "?q=" + query : ""}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    if (res.status === 401) {
+        throw new Error("Access denied");
+    }
+
+    const response = await res.json();
+    console.log("response: ", response);
+
+    return response.workspaces;
+};
+
+export const deleteWorkspaceApi = async (token: string, id: string) => {
+    const data = {
+        id: id,
+    };
+
+    const res = await fetch(`${backend_url}/workspace`, {
+        method: "DELETE",
+        body: JSON.stringify(data),
         headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "Application/json",
         },
     });
 
@@ -82,5 +112,34 @@ export const getWorkspacesApi = async(token: string, query:string | undefined) =
     const response = await res.json();
     console.log("response: ", response);
 
-    return response.workspaces
-}
+    return response;
+};
+
+export const updateWorkspaceStatusApi = async (
+    token: string,
+    id: string,
+    status: "running" | "stopped"
+) => {
+    const data = {
+        id: id,
+        status: status,
+    };
+
+    const res = await fetch(`${backend_url}/workspace`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "Application/json",
+        },
+    });
+
+    if (res.status === 401) {
+        throw new Error("Access denied");
+    }
+
+    const response = await res.json();
+    console.log("response: ", response);
+
+    return response;
+};

@@ -23,21 +23,19 @@ const routes: RouteObject[] = [
     {
         path: "dashboard",
         element: (
-            <Suspense fallback={<Typography>Loading...</Typography>}>
-                <DashboardLayout />
-            </Suspense>
+            <ProtectedRoute>
+                <Suspense fallback={<Typography>Loading...</Typography>}>
+                    <DashboardLayout />
+                </Suspense>
+            </ProtectedRoute>
         ),
         children: [
             {
                 path: "",
                 element: (
-                    // <ProtectedRoute>
-                        <Suspense
-                            fallback={<Typography>Loading...</Typography>}
-                        >
-                            <Dashboard />
-                        </Suspense>
-                    // </ProtectedRoute>
+                    <Suspense fallback={<Typography>Loading...</Typography>}>
+                        <Dashboard />
+                    </Suspense>
                 ),
             },
         ],

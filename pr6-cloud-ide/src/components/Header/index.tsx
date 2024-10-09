@@ -66,6 +66,7 @@ const Header: React.FC = () => {
                             {menuItems.map(
                                 (item: { text: string; id: string }) => (
                                     <Button
+                                        key={item.id}
                                         sx={{
                                             color: theme.palette.text.primary,
                                         }}
@@ -127,7 +128,7 @@ const Header: React.FC = () => {
                 <Box sx={{ width: "100vw", paddingX: "1rem" }}>
                     <List sx={{ width: "100%" }}>
                         {menuItems.map((item: { text: string; id: string }) => (
-                            <ListItem sx={{ paddingX: 0 }}>
+                            <ListItem sx={{ paddingX: 0 }} key={item.id}>
                                 <ListItemButton
                                     onClick={() => scrollToSection(item.id)}
                                 >

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createWorkspace, deleteWorkspace, getWorkspace } from '../controllers/workspace';
+import { createWorkspace, deleteWorkspace, getWorkspace, updateWorkspace } from '../controllers/workspace';
 import { jwtRequired } from '../middlewares';
 
 
@@ -9,5 +9,7 @@ workspaceRouter.route('')
 .post(jwtRequired, createWorkspace)
 .get(jwtRequired, getWorkspace)
 .delete(jwtRequired, deleteWorkspace)
+.patch(jwtRequired, updateWorkspace)
+
 
 export default workspaceRouter;

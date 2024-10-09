@@ -18,9 +18,14 @@ const DashboardLayout: React.FC = () => {
     const { getUser } = userStore();
 
     const navigate = useNavigate();
-
     const [userMenuAnchor, setUserMenuAnchor] = useState<HTMLElement | null>(
         null
+    );
+
+    const ProfileAvatar = getUser()?.profile_pic ? (
+        <Avatar src={getUser()?.profile_pic} />
+    ) : (
+        <Avatar>{getUser()?.name[0]}</Avatar>
     );
 
     const handleLogout = useCallback(() => {
@@ -38,23 +43,20 @@ const DashboardLayout: React.FC = () => {
                     <IconButton
                         onClick={(e) => setUserMenuAnchor(e.currentTarget)}
                     >
-                        {getUser()?.profile_pic ? (
-                            <Avatar src={getUser()?.profile_pic} />
-                        ) : (
-                            <Avatar>{getUser()?.name[0]}</Avatar>
-                        )}
+                        {ProfileAvatar}
                     </IconButton>
                     <Menu
                         open={Boolean(userMenuAnchor)}
                         anchorEl={userMenuAnchor}
                         onClose={() => setUserMenuAnchor(null)}
-                        sx={{ width: 320, maxWidth: "100%" }}
                     >
-                        <MenuList>
-                            <MenuItem>
-                                <ListItemText>{getUser()?.name}</ListItemText>
+                        <MenuList sx={{ minWidth: "200px" }}>
+                            <MenuItem className="flex gap-2">
+                                <Avatar>{ProfileAvatar}</Avatar>
+                                {getUser()?.name}
+                                {/* <ListItemText></ListItemText> */}
                             </MenuItem>
-                            <Divider/>
+                            <Divider />
                             <MenuItem onClick={handleLogout}>
                                 <ListItemText>Logout</ListItemText>
                             </MenuItem>

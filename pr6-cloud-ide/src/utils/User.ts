@@ -1,12 +1,17 @@
-import { getUserApi, getWorkspacesApi, googleSignInApi, signInApi, signUpApi } from "./api";
+import {
+    deleteWorkspaceApi,
+    getUserApi,
+    getWorkspacesApi,
+    googleSignInApi,
+    signInApi,
+    signUpApi,
+    updateWorkspaceStatusApi,
+} from "./api";
 import { IUser } from "../types";
 import { userStore } from "../stores/user";
 
 class User {
-
-    public constructor() {
-
-    }
+    public constructor() {}
 
     public async login(email: string, password: string): Promise<IUser> {
         const result = await signInApi(email, password);
@@ -52,7 +57,11 @@ class User {
         return user;
     }
 
-    public async signUp(email: string, name: string, password: string): Promise<IUser> {
+    public async signUp(
+        email: string,
+        name: string,
+        password: string
+    ): Promise<IUser> {
         const result = await signUpApi(email, name, password);
 
         if (!result) {
@@ -77,7 +86,7 @@ class User {
     public logout() {
         userStore.getState().logout();
 
-        sessionStorage.removeItem('token');
+        sessionStorage.removeItem("token");
     }
 
     public async isUserAuthenticated(): Promise<boolean> {
@@ -107,13 +116,44 @@ class User {
 
         if (!token) {
             console.log("login failed!!");
-            userStore.getState().logout()
+            userStore.getState().logout();
             throw new Error("User not logged in");
         }
 
         const result = await getWorkspacesApi(token, undefined);
 
         return result;
+    }
+
+    public async deleteWorkspace(id: string): Promise<any> {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            console.log("login failed!!");
+            userStore.getState().logout();
+            throw new Error("User not logged in");
+        }
+
+        const result = await deleteWorkspaceApi(token, id);
+
+        return result.workspaces;
+    }
+
+    public async updateWorkspaceStatus(
+        id: string,
+        status: "running" | "stopped"
+    ): Promise<any> {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            console.log("login failed!!");
+            userStore.getState().logout();
+            throw new Error("User not logged in");
+        }
+
+        const result = await updateWorkspaceStatusApi(token, id, status);
+
+        return result.workspaces;
     }
 }
 
