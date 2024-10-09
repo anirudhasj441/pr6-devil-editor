@@ -11,3 +11,9 @@ export interface IUserStore {
     setUser: (user: IUser) => void;
     logout: () => void;
 }
+
+export interface IWorkspaceGrid {
+    id: string
+    name: string
+    status: "running" | "stopped"
+}

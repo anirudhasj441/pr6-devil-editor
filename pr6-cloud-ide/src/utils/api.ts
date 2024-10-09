@@ -67,3 +67,20 @@ export const getUserApi = async (token: string) => {
 
     return response.user;
 };
+
+export const getWorkspacesApi = async(token: string, query:string | undefined) => {
+    const res = await fetch(`${backend_url}/workspace${query ? '?q=' + query: ''}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401) {
+        throw new Error("Access denied");
+    }
+
+    const response = await res.json();
+    console.log("response: ", response);
+
+    return response.workspaces
+}

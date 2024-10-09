@@ -13,6 +13,12 @@ const WorkspaceSchema: mongoose.Schema<IWorkspace> = new mongoose.Schema<IWorksp
         required: true,
         ref: 'user',
     },
+    status: {
+        type: String,
+        enum: ["running", "stopped"],
+        default: "stopped",
+        required: true
+    },
     uptime: {
         type: Number,
         default: 0,

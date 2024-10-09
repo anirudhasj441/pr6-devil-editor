@@ -9,35 +9,35 @@ const LoginPage = React.lazy(() => import("../pages/Login"));
 const SignUpPage = React.lazy(() => import("../pages/SignUp"));
 const Workspace = React.lazy(() => import("../pages/Workspace"));
 const Dashboard = React.lazy(() => import("../pages/Dashboard"));
-const MainLayout = React.lazy(() => import("../Layout/MainLayout"));
+const DashboardLayout = React.lazy(() => import("../Layout/DashboardLayout"));
 
 const routes: RouteObject[] = [
     {
         path: "/",
         element: (
             <Suspense fallback={<Typography>Loading...</Typography>}>
-                <MainLayout />
+                <IndexPage />
+            </Suspense>
+        ),
+    },
+    {
+        path: "dashboard",
+        element: (
+            <Suspense fallback={<Typography>Loading...</Typography>}>
+                <DashboardLayout />
             </Suspense>
         ),
         children: [
             {
                 path: "",
                 element: (
-                    <Suspense fallback={<Typography>Loading...</Typography>}>
-                        <IndexPage />
-                    </Suspense>
-                ),
-            },
-            {
-                path: "dashboard",
-                element: (
-                    <ProtectedRoute>
+                    // <ProtectedRoute>
                         <Suspense
                             fallback={<Typography>Loading...</Typography>}
                         >
                             <Dashboard />
                         </Suspense>
-                    </ProtectedRoute>
+                    // </ProtectedRoute>
                 ),
             },
         ],

@@ -12,5 +12,6 @@ export interface IWorkspace {
     _id?:string,
     name: string,
     owner: mongoose.Schema.Types.ObjectId,
+    status: "running" | "stopped"
     uptime: number
 }

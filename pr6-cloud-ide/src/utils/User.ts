@@ -1,4 +1,4 @@
-import { getUserApi, googleSignInApi, signInApi, signUpApi } from "./api";
+import { getUserApi, getWorkspacesApi, googleSignInApi, signInApi, signUpApi } from "./api";
 import { IUser } from "../types";
 import { userStore } from "../stores/user";
 
@@ -100,6 +100,20 @@ class User {
         });
 
         return true;
+    }
+
+    public async getWorkspaces(): Promise<any> {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            console.log("login failed!!");
+            userStore.getState().logout()
+            throw new Error("User not logged in");
+        }
+
+        const result = await getWorkspacesApi(token, undefined);
+
+        return result;
     }
 }
 
