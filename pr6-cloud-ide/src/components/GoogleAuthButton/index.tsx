@@ -30,7 +30,7 @@ const GoogleAuth: React.FC = () => {
 
             console.log(json_res);
 
-            navigate("/");
+            navigate("/dashboard");
         } catch (err) {
             console.error("auth failed: ", err);
             setError(true);
