@@ -7,8 +7,9 @@ import {
     TextField,
     Typography,
     IconButton,
+    CircularProgress,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
@@ -26,8 +27,10 @@ const SignUpPage: React.FC = () => {
     const [name, setName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
+        setLoading(true);
         e.preventDefault();
         try {
             const user = new User();
@@ -40,6 +43,7 @@ const SignUpPage: React.FC = () => {
             setError(true);
             setTimeout(() => setError(false), 3000);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -85,11 +89,13 @@ const SignUpPage: React.FC = () => {
                             label="Email"
                             type="email"
                             value={email}
+                            required
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <TextField
                             label="Name"
                             value={name}
+                            required
                             onChange={(e) => setName(e.target.value)}
                         />
                         <TextField
@@ -97,6 +103,7 @@ const SignUpPage: React.FC = () => {
                             type={showPassword ? "text" : "password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -122,8 +129,13 @@ const SignUpPage: React.FC = () => {
                             variant="contained"
                             sx={{ paddingY: "0.85rem" }}
                             type="submit"
+                            disabled={loading}
                         >
-                            Create Account
+                            {!loading ? (
+                                "Create Account"
+                            ) : (
+                                <CircularProgress size={"1.5rem"} />
+                            )}
                         </Button>
                     </form>
                     <div className="flex gap-2 justify-center my-2">
@@ -144,4 +156,4 @@ const SignUpPage: React.FC = () => {
     );
 };
 
-export default SignUpPage;
+export default memo(SignUpPage);

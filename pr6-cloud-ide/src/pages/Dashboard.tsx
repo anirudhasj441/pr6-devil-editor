@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
     const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
     const updateRows = (workspaces: any) => {
-        const rows = workspaces.map((workspace: any) => {
+        const rows = workspaces?.map((workspace: any) => {
             const row = {
                 id: workspace._id,
                 name: workspace.name,

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { memo } from "react";
 import Header from "../components/Header";
 
 const IndexPage: React.FC = () => {
-    return <>
-    <Header/>
-    </>;
+    return (
+        <>
+            <Header />
+        </>
+    );
 };
 
-export default IndexPage;
+export default memo(IndexPage);

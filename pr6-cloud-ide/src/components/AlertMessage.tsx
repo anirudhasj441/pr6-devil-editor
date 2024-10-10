@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {
     Zoom,
     Alert,
@@ -37,4 +37,4 @@ const AlertMessage: React.FC<IAlertMessageProps> = (
     );
 };
 
-export default AlertMessage;
+export default memo(AlertMessage);

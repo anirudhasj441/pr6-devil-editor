@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React from "react";
+import React, { memo } from "react";
 import User from "../utils/User";
 import { useNavigate } from "react-router-dom";
 
@@ -11,12 +11,14 @@ const LogoutButton: React.FC = () => {
 
         user.logout();
 
-        navigate('/login');
-    }
+        navigate("/login");
+    };
 
-    return <>
-        <Button onClick={handleLogout}>Logout</Button>
-    </>
-}
+    return (
+        <>
+            <Button onClick={handleLogout}>Logout</Button>
+        </>
+    );
+};
 
-export default LogoutButton;
+export default memo(LogoutButton);

@@ -9,10 +9,46 @@ import {
     ListItemText,
     Divider,
 } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import User from "../../../utils/User";
 import { userStore } from "../../../stores/user";
+
+const stringToColor = (string: string | undefined): string => {
+    let hash = 0;
+    let i;
+    if (!string) return "#111111";
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+};
+
+const ProfilePic = memo(
+    (props: { profile_pic: string | undefined; name: string | undefined }) => {
+        return (
+            <>
+                {props.profile_pic ? (
+                    <Avatar src={props.profile_pic} />
+                ) : (
+                    <Avatar sx={{ bgcolor: stringToColor(props.name) }}>
+                        {props.name?.[0]}
+                    </Avatar>
+                )}
+            </>
+        );
+    }
+);
 
 const DashboardLayout: React.FC = () => {
     const { getUser } = userStore();
@@ -22,16 +58,10 @@ const DashboardLayout: React.FC = () => {
         null
     );
 
-    const ProfileAvatar = getUser()?.profile_pic ? (
-        <Avatar src={getUser()?.profile_pic} />
-    ) : (
-        <Avatar>{getUser()?.name[0]}</Avatar>
-    );
-
     const handleLogout = useCallback(() => {
         const user = new User();
         user.logout();
-        navigate("/");
+        navigate("/login");
     }, []);
 
     return (
@@ -43,7 +73,12 @@ const DashboardLayout: React.FC = () => {
                     <IconButton
                         onClick={(e) => setUserMenuAnchor(e.currentTarget)}
                     >
-                        {ProfileAvatar}
+                        {
+                            <ProfilePic
+                                profile_pic={getUser()?.profile_pic}
+                                name={getUser()?.name}
+                            />
+                        }
                     </IconButton>
                     <Menu
                         open={Boolean(userMenuAnchor)}
@@ -52,7 +87,10 @@ const DashboardLayout: React.FC = () => {
                     >
                         <MenuList sx={{ minWidth: "200px" }}>
                             <MenuItem className="flex gap-2">
-                                <Avatar>{ProfileAvatar}</Avatar>
+                                <ProfilePic
+                                    profile_pic={getUser()?.profile_pic}
+                                    name={getUser()?.name}
+                                />
                                 {getUser()?.name}
                                 {/* <ListItemText></ListItemText> */}
                             </MenuItem>
@@ -68,4 +106,4 @@ const DashboardLayout: React.FC = () => {
     );
 };
 
-export default DashboardLayout;
+export default memo(DashboardLayout);

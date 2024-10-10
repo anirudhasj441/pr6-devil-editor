@@ -1,8 +1,9 @@
 import { RouteObject } from "react-router-dom";
 import ProtectedRoute from "../components/ProtectedRouted";
 import { Suspense } from "react";
-import { Typography } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
+import Loading from "../components/Loading";
 
 const IndexPage = React.lazy(() => import("../pages/Index"));
 const LoginPage = React.lazy(() => import("../pages/Login"));
@@ -15,7 +16,7 @@ const routes: RouteObject[] = [
     {
         path: "/",
         element: (
-            <Suspense fallback={<Typography>Loading...</Typography>}>
+            <Suspense fallback={<Loading />}>
                 <IndexPage />
             </Suspense>
         ),
@@ -24,7 +25,13 @@ const routes: RouteObject[] = [
         path: "dashboard",
         element: (
             <ProtectedRoute>
-                <Suspense fallback={<Typography>Loading...</Typography>}>
+                <Suspense
+                    fallback={
+                        <Backdrop open={true}>
+                            <CircularProgress />
+                        </Backdrop>
+                    }
+                >
                     <DashboardLayout />
                 </Suspense>
             </ProtectedRoute>
@@ -33,7 +40,13 @@ const routes: RouteObject[] = [
             {
                 path: "",
                 element: (
-                    <Suspense fallback={<Typography>Loading...</Typography>}>
+                    <Suspense
+                        fallback={
+                            <Backdrop open={true}>
+                                <CircularProgress />
+                            </Backdrop>
+                        }
+                    >
                         <Dashboard />
                     </Suspense>
                 ),
@@ -43,7 +56,7 @@ const routes: RouteObject[] = [
     {
         path: "/signup",
         element: (
-            <Suspense fallback={<Typography>Loading...</Typography>}>
+            <Suspense fallback={<Loading />}>
                 <SignUpPage />
             </Suspense>
         ),
@@ -51,7 +64,7 @@ const routes: RouteObject[] = [
     {
         path: "/login",
         element: (
-            <Suspense fallback={<Typography>Loading...</Typography>}>
+            <Suspense fallback={<Loading />}>
                 <LoginPage />
             </Suspense>
         ),
@@ -60,7 +73,13 @@ const routes: RouteObject[] = [
         path: "/workspace/",
         element: (
             <ProtectedRoute>
-                <Suspense fallback={<Typography>Loading...</Typography>}>
+                <Suspense
+                    fallback={
+                        <Backdrop open={true}>
+                            <CircularProgress />
+                        </Backdrop>
+                    }
+                >
                     <Workspace />
                 </Suspense>
             </ProtectedRoute>

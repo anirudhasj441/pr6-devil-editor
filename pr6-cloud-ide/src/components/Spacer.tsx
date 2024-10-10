@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 const Spacer: React.FC = () => {
     return (
@@ -8,4 +8,4 @@ const Spacer: React.FC = () => {
     );
 };
 
-export default Spacer;
+export default memo(Spacer);

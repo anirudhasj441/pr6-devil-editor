@@ -7,8 +7,9 @@ import {
     TextField,
     Typography,
     IconButton,
+    CircularProgress,
 } from "@mui/material";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, memo } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
@@ -24,15 +25,18 @@ const LoginPage: React.FC = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const user = new User();
             const result: IUser = await user.login(email, password);
             result;
+
             navigate("/dashboard");
         } catch (err) {
             console.error("Login Failed!", err);
@@ -41,6 +45,7 @@ const LoginPage: React.FC = () => {
                 setError(false);
             }, 3000);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -68,7 +73,7 @@ const LoginPage: React.FC = () => {
                 <AlertMessage
                     show={error}
                     severity="error"
-                    message="Invalid Credentilas"
+                    message="Invalid Credentials"
                 ></AlertMessage>
                 <Paper
                     elevation={3}
@@ -86,13 +91,19 @@ const LoginPage: React.FC = () => {
                             label="Email"
                             type="email"
                             value={email}
+                            name="email"
+                            autoComplete="username"
+                            required
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <TextField
                             label="Password"
                             type={showPassword ? "text" : "password"}
                             value={password}
+                            name="password"
                             onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="current-password"
+                            required
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -118,8 +129,13 @@ const LoginPage: React.FC = () => {
                             variant="contained"
                             sx={{ paddingY: "0.85rem" }}
                             type="submit"
+                            disabled={loading}
                         >
-                            Login
+                            {!loading ? (
+                                "Login"
+                            ) : (
+                                <CircularProgress size={"1.5rem"} />
+                            )}
                         </Button>
                     </form>
                     <div className="flex gap-2 justify-center my-2">
@@ -140,4 +156,4 @@ const LoginPage: React.FC = () => {
     );
 };
 
-export default LoginPage;
+export default memo(LoginPage);

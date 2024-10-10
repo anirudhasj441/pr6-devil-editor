@@ -1,5 +1,5 @@
 import { Avatar, IconButton } from "@mui/material";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import User from "../../utils/User";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const GoogleAuthButton = () => {
     );
 };
 
-const GoogleAuth: React.FC = () => {
+const GoogleAuth: React.FC = memo(() => {
     const navigate = useNavigate();
 
     const [error, setError] = useState<boolean>(false);
@@ -59,6 +59,6 @@ const GoogleAuth: React.FC = () => {
             </div>
         </>
     );
-};
+});
 
-export default GoogleAuthButton;
+export default memo(GoogleAuthButton);
