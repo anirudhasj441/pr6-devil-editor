@@ -15,9 +15,12 @@ export const createWorkspace = async (req: Request, res: Response) => {
             uptime: 0,
         });
 
+        const workspaces = await Workspace.find({owner: user._id}).select("-owner")
+
         res.send({
             msg: "workspace created successfully",
             workspace: workspace.toJSON(),
+            workspaces: workspaces
         });
     } catch (err) {
         // Log and send the error response in case of failure.
