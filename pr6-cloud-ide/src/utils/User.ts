@@ -1,4 +1,5 @@
 import {
+    createWorkspaceApi,
     deleteWorkspaceApi,
     getUserApi,
     getWorkspacesApi,
@@ -123,6 +124,20 @@ class User {
         const result = await getWorkspacesApi(token, undefined);
 
         return result;
+    }
+
+    public async createWorkspace(name: string): Promise<any> {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            console.log("login failed!!");
+            userStore.getState().logout();
+            throw new Error("User not logged in");
+        }
+
+        const result = await createWorkspaceApi(token, name);
+
+        return result.workspaces;
     }
 
     public async deleteWorkspace(id: string): Promise<any> {

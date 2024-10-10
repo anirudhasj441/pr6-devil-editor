@@ -7,7 +7,16 @@ import {
     GridRowParams,
     useGridApiRef,
 } from "@mui/x-data-grid";
-import { Button, Chip, Paper, Typography } from "@mui/material";
+import {
+    Button,
+    Chip,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Paper,
+    TextField,
+    Typography,
+} from "@mui/material";
 import {
     Delete,
     PauseCircle,
@@ -28,6 +37,10 @@ const Dashboard: React.FC = () => {
     const navigate = useNavigate();
 
     const [rows, setRows] = useState([]);
+    const [showCreateWorkspaceDialog, setShowCreateWorkspaceDialog] =
+        useState(false);
+
+    const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
     const updateRows = (workspaces: any) => {
         const rows = workspaces.map((workspace: any) => {
@@ -60,6 +73,16 @@ const Dashboard: React.FC = () => {
         const workspaces = await user.updateWorkspaceStatus(id, status);
 
         updateRows(workspaces);
+    };
+
+    const handleCreateWorkspace = async () => {
+        const user = new User();
+
+        const workspaces = await user.createWorkspace(newWorkspaceName);
+
+        updateRows(workspaces);
+        setNewWorkspaceName("");
+        setShowCreateWorkspaceDialog(false);
     };
 
     const columns: GridColDef[] = useMemo(
@@ -95,6 +118,7 @@ const Dashboard: React.FC = () => {
                             event.stopPropagation();
                             navigate("/workspace");
                         }}
+                        disabled={params.row.status !== "running"}
                         showInMenu
                     />,
                     <GridActionsCellItem
@@ -125,7 +149,7 @@ const Dashboard: React.FC = () => {
                 ],
             },
         ],
-        []
+        [handleUpdateStatus, handleDeleteWorkspace]
     );
 
     useEffect(() => {
@@ -140,8 +164,6 @@ const Dashboard: React.FC = () => {
 
         fetchWorkspaces();
 
-        // setRows([{ id: 1, name: "demo", status: "running" }]);
-
         return () => {
             mounted.current = true;
         };
@@ -150,6 +172,37 @@ const Dashboard: React.FC = () => {
     return (
         <>
             <div className="flex justify-center py-5">
+                <Dialog
+                    open={showCreateWorkspaceDialog}
+                    onClose={() => setShowCreateWorkspaceDialog(false)}
+                    maxWidth={"md"}
+                >
+                    <DialogTitle>Create New Workspace</DialogTitle>
+                    <DialogContent>
+                        <div className="flex flex-col gap-3 w-[500px] pt-1">
+                            <div className="">
+                                <TextField
+                                    value={newWorkspaceName}
+                                    fullWidth
+                                    label="Workspace name"
+                                    onChange={(e) =>
+                                        setNewWorkspaceName(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className="text-end">
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={handleCreateWorkspace}
+                                >
+                                    CREATE
+                                </Button>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+
                 <Paper elevation={0} sx={{ width: 800, maxWidth: "100%" }}>
                     <div className="w-full flex py-3">
                         <Typography variant="h4">WorkSpaces</Typography>
@@ -159,6 +212,9 @@ const Dashboard: React.FC = () => {
                                 variant="contained"
                                 color="success"
                                 sx={{ paddingY: "0.25rem" }}
+                                onClick={() =>
+                                    setShowCreateWorkspaceDialog(true)
+                                }
                             >
                                 Create New
                             </Button>

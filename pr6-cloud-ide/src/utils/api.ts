@@ -91,6 +91,30 @@ export const getWorkspacesApi = async (
     return response.workspaces;
 };
 
+export const createWorkspaceApi = async (token: string, name: string) => {
+    const data = {
+        name: name,
+    };
+
+    const res = await fetch(`${backend_url}/workspace`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "Application/json",
+        },
+    });
+
+    if (res.status === 401) {
+        throw new Error("Access denied");
+    }
+
+    const response = await res.json();
+    console.log("response: ", response);
+
+    return response;
+};
+
 export const deleteWorkspaceApi = async (token: string, id: string) => {
     const data = {
         id: id,
