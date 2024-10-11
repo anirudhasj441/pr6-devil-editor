@@ -1,7 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import ProtectedRoute from "../components/ProtectedRouted";
 import { Suspense } from "react";
-import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import Loading from "../components/Loading";
 
@@ -25,13 +24,7 @@ const routes: RouteObject[] = [
         path: "dashboard",
         element: (
             <ProtectedRoute>
-                <Suspense
-                    fallback={
-                        <Backdrop open={true}>
-                            <CircularProgress />
-                        </Backdrop>
-                    }
-                >
+                <Suspense fallback={<Loading />}>
                     <DashboardLayout />
                 </Suspense>
             </ProtectedRoute>
@@ -40,13 +33,7 @@ const routes: RouteObject[] = [
             {
                 path: "",
                 element: (
-                    <Suspense
-                        fallback={
-                            <Backdrop open={true}>
-                                <CircularProgress />
-                            </Backdrop>
-                        }
-                    >
+                    <Suspense fallback={<Loading />}>
                         <Dashboard />
                     </Suspense>
                 ),
@@ -73,13 +60,7 @@ const routes: RouteObject[] = [
         path: "/workspace/",
         element: (
             <ProtectedRoute>
-                <Suspense
-                    fallback={
-                        <Backdrop open={true}>
-                            <CircularProgress />
-                        </Backdrop>
-                    }
-                >
+                <Suspense fallback={<Loading />}>
                     <Workspace />
                 </Suspense>
             </ProtectedRoute>

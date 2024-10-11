@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import User from "../../utils/User";
-import { Backdrop, CircularProgress } from "@mui/material";
+import Loading from "../Loading";
 
 interface IProtectedRouteProps {
     children: React.ReactElement;
@@ -38,9 +38,7 @@ const ProtectedRoute: React.FC<IProtectedRouteProps> = ({
         <>
             {loading ? (
                 <>
-                    <Backdrop open={loading}>
-                        <CircularProgress />
-                    </Backdrop>
+                    <Loading />
                 </>
             ) : (
                 children

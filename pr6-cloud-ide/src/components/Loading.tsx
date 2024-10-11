@@ -4,7 +4,10 @@ import React from "react";
 const Loading: React.FC<{ open?: boolean }> = (props: { open?: boolean }) => {
     return (
         <>
-            <Backdrop open={props.open ?? true}>
+            <Backdrop
+                open={props.open ?? true}
+                sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
+            >
                 <CircularProgress />
             </Backdrop>
         </>

@@ -41,6 +41,7 @@ const Dashboard: React.FC = () => {
         useState(false);
 
     const [newWorkspaceName, setNewWorkspaceName] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const updateRows = (workspaces: any) => {
         const rows = workspaces?.map((workspace: any) => {
@@ -55,6 +56,7 @@ const Dashboard: React.FC = () => {
     };
 
     const handleDeleteWorkspace = async (id: string) => {
+        setLoading(true);
         const user = new User();
 
         const workspaces = await user.deleteWorkspace(id);
@@ -62,20 +64,25 @@ const Dashboard: React.FC = () => {
         console.log(workspaces);
 
         updateRows(workspaces);
+
+        setLoading(false);
     };
 
     const handleUpdateStatus = async (
         id: string,
         status: "running" | "stopped"
     ) => {
+        setLoading(true);
         const user = new User();
 
         const workspaces = await user.updateWorkspaceStatus(id, status);
 
         updateRows(workspaces);
+        setLoading(false);
     };
 
     const handleCreateWorkspace = async () => {
+        setLoading(true);
         const user = new User();
 
         const workspaces = await user.createWorkspace(newWorkspaceName);
@@ -83,6 +90,7 @@ const Dashboard: React.FC = () => {
         updateRows(workspaces);
         setNewWorkspaceName("");
         setShowCreateWorkspaceDialog(false);
+        setLoading(false);
     };
 
     const columns: GridColDef[] = useMemo(
@@ -119,7 +127,6 @@ const Dashboard: React.FC = () => {
                             navigate("/workspace");
                         }}
                         disabled={params.row.status !== "running"}
-                        showInMenu
                     />,
                     <GridActionsCellItem
                         icon={
@@ -157,9 +164,11 @@ const Dashboard: React.FC = () => {
         const user = new User();
 
         const fetchWorkspaces = async () => {
+            setLoading(true);
             const workspaces = await user.getWorkspaces();
 
             updateRows(workspaces);
+            setLoading(false);
         };
 
         fetchWorkspaces();
@@ -226,6 +235,7 @@ const Dashboard: React.FC = () => {
                             rows={rows}
                             columns={columns}
                             hideFooter={true}
+                            loading={loading}
                         />
                     </div>
                 </Paper>

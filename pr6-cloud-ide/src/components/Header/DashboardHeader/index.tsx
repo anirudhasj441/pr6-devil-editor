@@ -8,11 +8,14 @@ import {
     MenuList,
     ListItemText,
     Divider,
+    ListItemIcon,
+    ListItem,
 } from "@mui/material";
 import React, { memo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import User from "../../../utils/User";
 import { userStore } from "../../../stores/user";
+import { Logout } from "@mui/icons-material";
 
 const stringToColor = (string: string | undefined): string => {
     let hash = 0;
@@ -86,17 +89,23 @@ const DashboardLayout: React.FC = () => {
                         onClose={() => setUserMenuAnchor(null)}
                     >
                         <MenuList sx={{ minWidth: "200px" }}>
-                            <MenuItem className="flex gap-2">
+                            <ListItem className="flex gap-2 py-1">
                                 <ProfilePic
                                     profile_pic={getUser()?.profile_pic}
                                     name={getUser()?.name}
                                 />
-                                {getUser()?.name}
+                                <ListItemText
+                                    primary={getUser()?.name}
+                                    secondary={getUser()?.email}
+                                />
                                 {/* <ListItemText></ListItemText> */}
-                            </MenuItem>
-                            <Divider />
+                            </ListItem>
+                            <Divider sx={{ marginY: "0.5rem" }} />
                             <MenuItem onClick={handleLogout}>
                                 <ListItemText>Logout</ListItemText>
+                                <ListItemIcon>
+                                    <Logout />
+                                </ListItemIcon>
                             </MenuItem>
                         </MenuList>
                     </Menu>
