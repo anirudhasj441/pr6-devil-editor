@@ -4,6 +4,7 @@ import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
 import User from "../../utils/User";
 import { useNavigate } from "react-router-dom";
 import AlertMessage from "../AlertMessage";
+import Loading from "../Loading";
 
 const GoogleAuthButton = () => {
     return (
@@ -21,14 +22,17 @@ const GoogleAuth: React.FC = memo(() => {
     const navigate = useNavigate();
 
     const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
 
     const handleGoogleAuthResponse = async (response: any): Promise<void> => {
         try {
+            setLoading(true);
             const user: User = new User();
 
             const json_res = await user.googleLogin(response.code);
 
             console.log(json_res);
+            setLoading(false);
 
             navigate("/dashboard");
         } catch (err) {
@@ -48,6 +52,7 @@ const GoogleAuth: React.FC = memo(() => {
     return (
         <>
             <div className="w-full text-center">
+                <Loading open={loading} />
                 <AlertMessage
                     show={error}
                     severity="error"
