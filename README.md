@@ -21,7 +21,7 @@ Devil Editor is an entirely web-based Integrated Development Environment (IDE) t
 
 ## Setup and Usage
 ### Starting the Workspace
-For detailed steps on building and starting the workspace Docker image, see the [workspace server README.md](./pr6-cloud-ide-server/README.md).
+For detailed steps on building and starting the workspace Docker images, see the [workspace server README.md](./pr6-cloud-ide-server/README.md).
 
 ### Starting the Backend
 To build and run the backend server, refer to the [backend README.md](./pr6-cloud-ide-server/README.md).
