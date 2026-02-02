@@ -9,39 +9,41 @@ import {
     IconButton,
     CircularProgress,
 } from "@mui/material";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { useRef, useState, useEffect, memo } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import User from "../utils/User";
+import { IUser } from "../types";
 import AlertMessage from "../components/AlertMessage";
 
-const SignUpPage: React.FC = () => {
-    const navigate = useNavigate();
-
+const LoginPage: React.FC = () => {
     const mounted = useRef(false);
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [email, setEmail] = useState<string>("");
-    const [name, setName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        setLoading(true);
+    const navigate = useNavigate();
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const user = new User();
-
-            await user.signUp(email, name, password);
+            const result: IUser = await user.login(email, password);
+            result;
 
             navigate("/dashboard");
         } catch (err) {
-            console.error("Create user failed!");
+            console.error("Login Failed!", err);
             setError(true);
-            setTimeout(() => setError(false), 3000);
+            setTimeout(() => {
+                setError(false);
+            }, 3000);
         }
         setLoading(false);
     };
@@ -69,40 +71,38 @@ const SignUpPage: React.FC = () => {
         <>
             <div className="h-svh w-svw flex justify-center items-center">
                 <AlertMessage
-                    severity="error"
                     show={error}
-                    message="Sign up failed!"
-                />
+                    severity="error"
+                    message="Invalid Credentials"
+                ></AlertMessage>
                 <Paper
                     elevation={3}
                     className="p-3 m-3"
                     sx={{ width: "100%", maxWidth: "500px" }}
                 >
                     <Typography variant="h5" align="center" padding={1}>
-                        Create a account
+                        Login
                     </Typography>
                     <form
                         className="flex flex-col gap-4 mt-4"
-                        onSubmit={handleSubmit}
+                        onSubmit={handleLogin}
                     >
                         <TextField
                             label="Email"
                             type="email"
                             value={email}
+                            name="email"
+                            autoComplete="username"
                             required
                             onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <TextField
-                            label="Name"
-                            value={name}
-                            required
-                            onChange={(e) => setName(e.target.value)}
                         />
                         <TextField
                             label="Password"
                             type={showPassword ? "text" : "password"}
                             value={password}
+                            name="password"
                             onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="current-password"
                             required
                             InputProps={{
                                 endAdornment: (
@@ -132,16 +132,16 @@ const SignUpPage: React.FC = () => {
                             disabled={loading}
                         >
                             {!loading ? (
-                                "Create Account"
+                                "Login"
                             ) : (
                                 <CircularProgress size={"1.5rem"} />
                             )}
                         </Button>
                     </form>
                     <div className="flex gap-2 justify-center my-2">
-                        <Typography>Already have account?</Typography>
-                        <Link component={RouterLink} to="/login">
-                            Login
+                        <Typography>Not have account?</Typography>
+                        <Link component={RouterLink} to="/signup">
+                            Create account
                         </Link>
                     </div>
                     <Divider>
@@ -156,4 +156,4 @@ const SignUpPage: React.FC = () => {
     );
 };
 
-export default memo(SignUpPage);
+export default memo(LoginPage);
